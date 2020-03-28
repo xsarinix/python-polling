@@ -2,8 +2,7 @@
 import csv
 
 # Declare variables
-votes = {}
-voter_ids = []
+votes = []
 results = {}
 
 # Read in CSV
@@ -13,24 +12,20 @@ with open(import_path, newline='') as csv_file:
     header = next(csv_reader)
 
     for row in csv_reader:
-        voter_ids.append(row[0])
-        votes.setdefault(row[2], []).append(row[0])
+        votes.append(row[2])
 
 # Calculate total number of votes
-total_votes = len(set(voter_ids))
+total_votes = len(votes)
 
 # List of candidates who received votes
-candidates = list(results.keys())
+candidates = list(set(votes))
 
-# Total votes and percentage of votes won by each candidate
-for candidate in votes:
-    results.setdefault(candidate, {})
-    results[candidate].setdefault("Total Votes", len(votes[candidate]))
-    results[candidate].setdefault("Percentage of Votes", len(votes[candidate])/total_votes)
-
-print(results)
+# Total votes won by each candidate
+for candidate in candidates:
+    results.setdefault(candidate, votes.count(candidate))
 
 # Winner of election based on popular vote
+winner = max(set(votes), key=votes.count)
 
 # Print output to terminal and to .txt file
 output = (
@@ -40,7 +35,7 @@ output = (
     f'---------------------\n'
     f'Name: % (total)\n'
     f'---------------------\n'
-    f'Winner: \n'
+    f'Winner: {winner}\n'
     f'---------------------\n'
 )
 
